@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import print_function
+
 import sys
 import re
 import argparse
@@ -8,7 +10,7 @@ RE_PREX = re.compile('/([^/]+)/([^/]*)/')
 
 
 def error(s):
-    print s
+    print(s)
 
 
 def cmdline_entry_point():
@@ -43,7 +45,7 @@ def cmdline_entry_point():
             _input = f.read()
 
         output = re.sub(str_search, str_replace, _input)
-        print output,
+        print(output, end='')
 
 
 if __name__ == '__main__':
