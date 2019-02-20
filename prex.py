@@ -15,12 +15,22 @@ def error(s):
 
 def cmdline_entry_point():
     parser = argparse.ArgumentParser(
-        description='Search and replace in files using regular expressions')
-    parser.add_argument('regex', type=str, action='store',
-                        help='The regular expression to search and replace with.')
-    parser.add_argument('infiles', type=str, action='store', nargs='*',
-                        help='File to be searched and replaced (if no file is specified \
-                              stdin is used')
+        description='Search and replace in files using regular expressions'
+    )
+    parser.add_argument(
+        'regex',
+        type=str,
+        action='store',
+        help='The regular expression to search and replace with.',
+    )
+    parser.add_argument(
+        'infiles',
+        type=str,
+        action='store',
+        nargs='*',
+        help='File to be searched and replaced (if no file is specified \
+                              stdin is used',
+    )
     args = parser.parse_args()
 
     matches = RE_PREX.match(args.regex)
@@ -28,7 +38,7 @@ def cmdline_entry_point():
         error('Unable to understand regex: `%s`' % args.regex)
         exit()
 
-    str_search  = matches.group(1)
+    str_search = matches.group(1)
     str_replace = matches.group(2)
 
     if args.infiles == []:
