@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import sys
-import re
 import argparse
+import re
+import sys
 
 
 RE_PREX = re.compile('/([^/]+)/([^/]*)/')
