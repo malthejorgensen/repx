@@ -6,7 +6,7 @@ import re
 import sys
 
 
-RE_PREX = re.compile('/([^/]+)/([^/]*)/')
+RE_PREX = re.compile('/([^/]+)/(([^/]*)/)?')
 
 
 def error(s):
@@ -44,7 +44,9 @@ def cmdline_entry_point():
         exit()
 
     str_search = matches.group(1)
-    str_replace = matches.group(2)
+    str_replace = matches.group(3)
+
+    should_replace = matches.group(2)
 
     if args.infiles == []:
         infiles = [sys.stdin]
@@ -59,13 +61,18 @@ def cmdline_entry_point():
             f = filename
             _input = f.read()
 
-        output = re.sub(str_search, str_replace, _input)
+        if should_replace:
+            output = re.sub(str_search, str_replace, _input)
 
-        if is_inplace_replacement:
-            with open(filename, 'w') as f:
-                _input = f.write(output)
+            if is_inplace_replacement:
+                with open(filename, 'w') as f:
+                    _input = f.write(output)
+            else:
+                print(output, end='')
         else:
-            print(output, end='')
+            output = re.findall(str_search, _input)
+            for match in output:
+                print(match)
 
 
 if __name__ == '__main__':
