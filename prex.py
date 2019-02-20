@@ -31,7 +31,12 @@ def cmdline_entry_point():
         help='File to be searched and replaced (if no file is specified \
                               stdin is used',
     )
+    parser.add_argument(
+        '-i', '--in-place', action='store_true', help='Modify files in-place'
+    )
+
     args = parser.parse_args()
+    is_inplace_replacement = args.in_place
 
     matches = RE_PREX.match(args.regex)
     if not matches:
@@ -55,7 +60,12 @@ def cmdline_entry_point():
             _input = f.read()
 
         output = re.sub(str_search, str_replace, _input)
-        print(output, end='')
+
+        if is_inplace_replacement:
+            with open(filename, 'w') as f:
+                _input = f.write(output)
+        else:
+            print(output, end='')
 
 
 if __name__ == '__main__':
