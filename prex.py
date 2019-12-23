@@ -70,9 +70,9 @@ def cmdline_entry_point():
             else:
                 print(output, end='')
         else:
-            output = re.findall(str_search, _input)
+            output = re.finditer(str_search, _input)
             for match in output:
-                for line in match.split('\n'):
+                for line in match.group(0).split('\n'):
                     if type(filename) == str:
                         print('%s: %s' % (filename, line))
                     else:
