@@ -72,7 +72,11 @@ def cmdline_entry_point():
         else:
             output = re.findall(str_search, _input)
             for match in output:
-                print(match)
+                for line in match.split('\n'):
+                    if type(filename) == str:
+                        print('%s: %s' % (filename, line))
+                    else:
+                        print(line)
 
 
 if __name__ == '__main__':
