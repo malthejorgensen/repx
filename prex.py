@@ -23,6 +23,16 @@ def substitute(str_search, str_replace, _input):
         # simply make `$` match before all newlines.
         # This is a small hack to prevent the double matching from `$`.
         #
+        # A different possible solution would be to use the '\Z' matching
+        # character:
+        #
+        #     if str_search == '$':
+        #         str_search = '\Z'
+        #
+        # but that replaces _after_ the ending newline, which is not what you
+        # want from a good Unix or git-citizen (git best-practice is to have
+        # all text files end with a newline).
+        #
         # See: https://docs.python.org/3/library/re.html#index-2
         replace_count = 1
         if str_replace.endswith('\\n'):
