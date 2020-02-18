@@ -13,6 +13,27 @@ def error(s):
     print(s)
 
 
+def substitute(str_search, str_replace, _input):
+    if str_search == '$' and _input[-1] == '\n':
+        # Workaround weird Python behavior for `$`.
+        # If the "haystack" has a newline (`\n`) at the end, `$` will have TWO
+        # matches: one before the `\n` and one after.
+        # This is surprising, and impossible to prevent. The only flag
+        # affecting this behavior is `re.MULTILINE` which when passed will
+        # simply make `$` match before all newlines.
+        # This is a small hack to prevent the double matching from `$`.
+        #
+        # See: https://docs.python.org/3/library/re.html#index-2
+        replace_count = 1
+        if str_replace.endswith('\\n'):
+            # Remove newline at end of pattern
+            str_replace = str_replace[:-2]
+    else:
+        replace_count = 0
+
+    return re.sub(str_search, str_replace, _input, count=replace_count)
+
+
 def cmdline_entry_point():
     parser = argparse.ArgumentParser(
         description='Search and replace in files using regular expressions'
@@ -62,7 +83,7 @@ def cmdline_entry_point():
             _input = f.read()
 
         if should_replace:
-            output = re.sub(str_search, str_replace, _input)
+            output = substitute(str_search, str_replace, _input)
 
             if is_inplace_replacement:
                 with open(filename, 'w') as f:
