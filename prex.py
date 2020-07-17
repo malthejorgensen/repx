@@ -6,9 +6,6 @@ import re
 import sys
 
 
-RE_PREX = re.compile('/([^/]+)/(([^/]*)/)?')
-
-
 def error(s):
     print(s)
 
@@ -69,7 +66,12 @@ def cmdline_entry_point():
     args = parser.parse_args()
     is_inplace_replacement = args.in_place
 
-    matches = RE_PREX.match(args.regex)
+    delimiter = args.regex[0]
+    re_prex = re.compile(
+        '%s([^/%s]+)%s(([^%s]*)%s)?'
+        % (delimiter, delimiter, delimiter, delimiter, delimiter)
+    )
+    matches = re_prex.match(args.regex)
     if not matches:
         error('Unable to understand regex: `%s`' % args.regex)
         exit()
