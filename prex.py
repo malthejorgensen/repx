@@ -41,6 +41,34 @@ def substitute(str_search, str_replace, _input):
     return re.sub(str_search, str_replace, _input, count=replace_count)
 
 
+def print_match(match, filename=None):
+    for line in match.group(0).split('\n'):
+        if type(filename) == str:
+            print('%s: %s' % (filename, line))
+        else:
+            print(line)
+
+
+def print_matching_line(_input, match, filename=None):
+    line_start = 0
+    # Find line beginning
+    for idx in range(match.start(), 0, -1):
+        if _input[idx] == '\n':
+            line_start = idx + 1
+            break
+    # Find line end
+    for idx in range(match.start(), len(_input)):
+        if _input[idx] == '\n':
+            line_end = idx
+            break
+
+    line = _input[line_start:line_end]
+    if type(filename) == str:
+        print('%s: %s' % (filename, line))
+    else:
+        print(line)
+
+
 def cmdline_entry_point():
     parser = argparse.ArgumentParser(
         description='Search and replace in files using regular expressions'
@@ -62,9 +90,13 @@ def cmdline_entry_point():
     parser.add_argument(
         '-i', '--in-place', action='store_true', help='Modify files in-place'
     )
+    parser.add_argument(
+        '-c', '--confirm', action='store_true', help='Ask for each replacement'
+    )
 
     args = parser.parse_args()
     is_inplace_replacement = args.in_place
+    should_ask = args.confirm
 
     delimiter = args.regex[0]
     re_prex = re.compile(
@@ -79,7 +111,7 @@ def cmdline_entry_point():
     str_search = matches.group(1)
     str_replace = matches.group(3)
 
-    should_replace = matches.group(2)
+    is_replacing = matches.group(2)
 
     if args.infiles == []:
         infiles = [sys.stdin]
@@ -94,8 +126,31 @@ def cmdline_entry_point():
             f = filename
             _input = f.read()
 
-        if should_replace:
-            output = substitute(str_search, str_replace, _input)
+        if is_replacing:
+            output = ''
+
+            matches = re.finditer(str_search, _input)
+
+            current_pos = 0
+            for match in matches:
+                output += _input[current_pos : match.start()]
+
+                should_replace = True
+                if should_ask:
+                    print_matching_line(_input, match, filename)
+                    print('Replace? (y/n) ', flush=True, end='')
+                    yesno = input()
+                    if yesno.lower() not in ('y', 'yes'):
+                        should_replace = False
+
+                if should_replace:
+                    output += re.sub(str_search, str_replace, match.group(0))
+                else:
+                    output += match.group(0)
+
+                current_pos = match.end()
+
+            output += _input[current_pos:]
 
             if is_inplace_replacement:
                 with open(filename, 'w') as f:
