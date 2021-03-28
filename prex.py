@@ -100,7 +100,7 @@ def cmdline_entry_point():
 
     delimiter = args.regex[0]
     re_prex = re.compile(
-        '%s([^/%s]+)%s(([^%s]*)%s)?'
+        '%s([^%s]+)%s(([^%s]*)%s)?'
         % (delimiter, delimiter, delimiter, delimiter, delimiter)
     )
     matches = re_prex.match(args.regex)
