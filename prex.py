@@ -5,9 +5,31 @@ import argparse
 import re
 import sys
 
+VERBOSITY = 0
+V_ERROR = -1
+V_WARN = 0
+V_INFO = 1
+V_DEBUG = 2
 
-def error(s):
-    print(s)
+
+def print_error(s):
+    if VERBOSITY > V_ERROR:
+        print(s)
+
+
+def print_warning(str):
+    if VERBOSITY > V_WARN:
+        print(str)
+
+
+def print_info(str):
+    if VERBOSITY > V_INFO:
+        print(str)
+
+
+def print_debug(str):
+    if VERBOSITY > V_DEBUG:
+        print(str)
 
 
 def substitute(str_search, str_replace, _input):
@@ -70,6 +92,7 @@ def print_matching_line(_input, match, filename=None):
 
 
 def cmdline_entry_point():
+    global VERBOSITY
     parser = argparse.ArgumentParser(
         description='Search and replace in files using regular expressions'
     )
@@ -96,10 +119,19 @@ def cmdline_entry_point():
     parser.add_argument(
         '-g', '--group', help='Print this capture group instead of the whole match'
     )
+    parser.add_argument(
+        '-v',
+        '--verbose',
+        action='count',
+        help='Set verbosity level, pass this multiple times for more verbosity. E.g. "-vvv".',
+        default=0,
+    )
 
     args = parser.parse_args()
     is_inplace_replacement = args.in_place
     should_ask = args.confirm
+
+    VERBOSITY = args.verbose
 
     delimiter = re.escape(args.regex[0])
     re_prex = re.compile(
@@ -108,11 +140,13 @@ def cmdline_entry_point():
     )
     matches = re_prex.match(args.regex)
     if not matches:
-        error('Unable to understand regex: `%s`' % args.regex)
+        print_error('Unable to understand regex: `%s`' % args.regex)
         exit()
 
     str_search = matches.group(1)
     str_replace = matches.group(3)
+    print_debug(f'Search term: "{str_search}"')
+    print_debug(f'Replace term: "{str_replace}"')
 
     is_replacing = matches.group(2)
 
@@ -121,7 +155,7 @@ def cmdline_entry_point():
         try:
             print_group = int(args.group)
         except ValueError:
-            error('-g/--group must be an integer, was "%s"' % args.group)
+            print_error('-g/--group must be an integer, was "%s"' % args.group)
             exit()
 
     if args.infiles == []:
