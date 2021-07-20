@@ -120,6 +120,12 @@ def cmdline_entry_point():
         '-g', '--group', help='Print this capture group instead of the whole match'
     )
     parser.add_argument(
+        '-l',
+        '--line',
+        action='store_true',
+        help='Match line-by-line instead of multiline/whole-file',
+    )
+    parser.add_argument(
         '-v',
         '--verbose',
         action='count',
@@ -143,7 +149,10 @@ def cmdline_entry_point():
         print_error('Unable to understand regex: `%s`' % args.regex)
         exit()
 
-    str_search = matches.group(1)
+    re_flags = 0
+    if args.line:
+        re_flags = re_flags | re.MULTILINE
+    str_search = re.compile(matches.group(1), re_flags)
     str_replace = matches.group(3)
     print_debug(f'Search term: "{str_search}"')
     print_debug(f'Replace term: "{str_replace}"')
