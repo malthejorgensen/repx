@@ -101,7 +101,7 @@ def cmdline_entry_point():
     is_inplace_replacement = args.in_place
     should_ask = args.confirm
 
-    delimiter = args.regex[0]
+    delimiter = re.escape(args.regex[0])
     re_prex = re.compile(
         '%s([^%s]+)%s(([^%s]*)%s)?'
         % (delimiter, delimiter, delimiter, delimiter, delimiter)
