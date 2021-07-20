@@ -93,6 +93,9 @@ def cmdline_entry_point():
     parser.add_argument(
         '-c', '--confirm', action='store_true', help='Ask for each replacement'
     )
+    parser.add_argument(
+        '-g', '--group', help='Print this capture group instead of the whole match'
+    )
 
     args = parser.parse_args()
     is_inplace_replacement = args.in_place
@@ -112,6 +115,14 @@ def cmdline_entry_point():
     str_replace = matches.group(3)
 
     is_replacing = matches.group(2)
+
+    print_group = None
+    if args.group:
+        try:
+            print_group = int(args.group)
+        except ValueError:
+            error('-g/--group must be an integer, was "%s"' % args.group)
+            exit()
 
     if args.infiles == []:
         infiles = [sys.stdin]
@@ -160,11 +171,14 @@ def cmdline_entry_point():
         else:
             output = re.finditer(str_search, _input)
             for match in output:
-                for line in match.group(0).split('\n'):
-                    if type(filename) == str:
-                        print('%s: %s' % (filename, line))
-                    else:
-                        print(line)
+                if print_group:
+                    print(match.group(print_group))
+                else:
+                    for line in match.group(0).split('\n'):
+                        if type(filename) == str:
+                            print('%s: %s' % (filename, line))
+                        else:
+                            print(line)
 
 
 if __name__ == '__main__':
