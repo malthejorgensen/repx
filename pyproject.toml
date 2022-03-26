@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "prex"
+name = "repx"
 version = "0.0.1"
 description = "Search and replace in files with regular expressions"
 authors = ["Malthe Jørgensen <malthe.jorgensen@gmail.com>"]
-homepage = "https://github.com/malthejorgensen/prex"
-repository = "https://github.com/malthejorgensen/prex"
+homepage = "https://github.com/malthejorgensen/repx"
+repository = "https://github.com/malthejorgensen/repx"
 license = "BSD-2-Clause"
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
@@ -29,5 +29,5 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.poetry.scripts]
-prex = "prex.main:cmdline_entry_point"
+repx = "repx.main:cmdline_entry_point"
 

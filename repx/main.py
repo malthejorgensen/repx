@@ -140,11 +140,11 @@ def cmdline_entry_point():
     VERBOSITY = args.verbose
 
     delimiter = re.escape(args.regex[0])
-    re_prex = re.compile(
+    re_repx = re.compile(
         '%s([^%s]+)%s(([^%s]*)%s)?'
         % (delimiter, delimiter, delimiter, delimiter, delimiter)
     )
-    matches = re_prex.match(args.regex)
+    matches = re_repx.match(args.regex)
     if not matches:
         print_error('Unable to understand regex: `%s`' % args.regex)
         exit()

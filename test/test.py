@@ -11,7 +11,7 @@ class MainTestCase(unittest.TestCase):
         for filename in os.listdir('infiles'):
             if filename.endswith('.txt'):
                 res = subprocess.run(
-                    ['prex', '/$/a/', 'infiles/%s' % filename],
+                    ['repx', '/$/a/', 'infiles/%s' % filename],
                     capture_output=True,
                     # text=True,
                 )
