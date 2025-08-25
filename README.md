@@ -37,9 +37,9 @@ $ cat in2.txt
 I love turtles!
 ```
 
-Backreferences are supported during substitution is supported, but backslash
-escapes on the command line can be hard, so it can be helpful to use `\g<1>`
-in place of `\1`:
+Backreferences are supported both for normal search and during
+substitution, but backslash escapes on the command line can be tricky,
+so it can be helpful to use `\g<1>` in place of `\1`:
 
 ```ShellSession
 $ repx -i '/YAML(Reader|Writer)/JSON\1/' [files...] # Won't work
@@ -49,7 +49,7 @@ $ repx -i '/YAML(Reader|Writer)/JSON\g<1>/' [files...] # Will work
 
 Typical use
 -----------
-Typical use is within a git repository and using the `-i` option.
+Typical use is within a git repository and the `-i` option.
 `-i` will irreversibly change the files passed on the command line so
 be sure to commit previous changes before running the command.
 Usually you will use `repx`  in tandem with `git grep -l` like
